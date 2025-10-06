@@ -110,6 +110,42 @@
     .end-title{margin:0 0 10px; font-size:clamp(28px,5vw,44px); color:var(--gold); font-weight:900}
     .end-text{font-weight:800; color:var(--ink); opacity:.95; margin-bottom:16px}
     .end-btn{font-size:20px; padding:16px 24px; border-radius:16px}
+
+    /* ===== Countdown GATE (overlay) ===== */
+    .gate{
+      position:fixed; inset:0; z-index:5000;
+      display:none; place-items:center;
+      background:radial-gradient(1200px 600px at 50% -10%, rgba(255,220,115,.15), transparent 65%), rgba(2,6,18,.94);
+      backdrop-filter:saturate(1.1) blur(2px);
+    }
+    .gate.show{display:grid}
+    .gcard{
+      width:min(1100px,96vw); text-align:center; padding:32px 24px; border-radius:28px;
+      background:linear-gradient(180deg,#132a63,#0b173f);
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:0 50px 160px rgba(0,0,0,.65)
+    }
+    .gtitle{margin:0 0 10px; font-size:clamp(26px,4.5vw,38px); color:var(--gold); font-weight:900; letter-spacing:.4px}
+    .gsub{margin:0 0 18px; color:var(--muted); font-weight:800}
+    .clock{
+      display:flex; justify-content:center; gap:min(24px,3vw); flex-wrap:wrap;
+      margin:10px 0 4px;
+    }
+    .tick{
+      min-width:150px; padding:14px 16px; border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:inset 0 0 40px rgba(0,0,0,.25), 0 16px 40px rgba(0,0,0,.35);
+    }
+    .num{
+      font-weight:900; line-height:1; letter-spacing:1px;
+      font-size:clamp(40px, 10vw, 110px);
+      color:var(--gold);
+      text-shadow:0 2px 0 #000, 0 18px 40px rgba(0,0,0,.35);
+    }
+    .lbl{opacity:.9; font-weight:800; margin-top:6px}
+    .gfoot{margin-top:14px; font-size:13px; color:var(--muted)}
+    .gfoot b{color:var(--gold)}
   </style>
 </head>
 <body>
@@ -223,6 +259,21 @@
       <h3 class="end-title">🎁 Подарок от мамы и брата уже в пути!</h3>
       <div class="end-text">Спасибо за игру! Остался последний штрих — финальное поздравление.</div>
       <button id="endFinish" class="btn end-btn">Завершить игру</button>
+    </div>
+  </div>
+
+  <!-- ===== Countdown overlay (GATE) ===== -->
+  <div id="gate" class="gate" aria-hidden="true">
+    <div class="gcard">
+      <h3 class="gtitle">🔒 Доступ будет открыт в субботу</h3>
+      <p class="gsub">Осталось до открытия:</p>
+      <div class="clock" id="clock">
+        <div class="tick"><div class="num" id="d">00</div><div class="lbl">дней</div></div>
+        <div class="tick"><div class="num" id="h">00</div><div class="lbl">часов</div></div>
+        <div class="tick"><div class="num" id="m">00</div><div class="lbl">минут</div></div>
+        <div class="tick"><div class="num" id="s">00</div><div class="lbl">секунд</div></div>
+      </div>
+      <div class="gfoot">Совсем скоро начнём. Если ты админ — добавь <b>?preview=1</b> к адресу, чтобы посмотреть сайт.</div>
     </div>
   </div>
 
@@ -697,6 +748,73 @@
       endModal.classList.remove('show'); endModal.setAttribute('aria-hidden','true');
       openFinalCongratsVideo();
     });
+
+    // ====== COUNTDOWN LOGIC ======
+    (function setupGate(){
+      const url = new URL(window.location.href);
+      const previewBypass = url.searchParams.get('preview') === '1';
+      const gate = document.getElementById('gate');
+      if(!gate) return;
+
+      // Настройка цели: ближайшая СУББОТА 19:00 локального времени
+      const targetHour = 19, targetMinute = 0;
+
+      function getNextSaturdayAt(h=19, m=0){
+        const now = new Date();
+        const day = now.getDay(); // 0=Sun ... 6=Sat
+        let diff = (6 - day + 7) % 7; // до субботы
+        let candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff, h, m, 0, 0);
+        if (candidate <= now) {
+          candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff + 7, h, m, 0, 0);
+        }
+        return candidate;
+      }
+
+      const target = getNextSaturdayAt(targetHour, targetMinute);
+
+      function updateClock(){
+        const now = new Date();
+        const remain = target - now;
+        if (remain <= 0){
+          // Время пришло — скрываем оверлей
+          gate.classList.remove('show');
+          gate.setAttribute('aria-hidden','true');
+          clearInterval(tid);
+          return;
+        }
+        const s = Math.floor(remain/1000) % 60;
+        const m = Math.floor(remain/1000/60) % 60;
+        const h = Math.floor(remain/1000/60/60) % 24;
+        const d = Math.floor(remain/1000/60/60/24);
+
+        const dd = document.getElementById('d');
+        const hh = document.getElementById('h');
+        const mm = document.getElementById('m');
+        const ss = document.getElementById('s');
+        if(dd) dd.textContent = String(d).padStart(2,'0');
+        if(hh) hh.textContent = String(h).padStart(2,'0');
+        if(mm) mm.textContent = String(m).padStart(2,'0');
+        if(ss) ss.textContent = String(s).padStart(2,'0');
+      }
+
+      if (previewBypass){
+        // Админ-просмотр — не показываем
+        gate.classList.remove('show');
+        gate.setAttribute('aria-hidden','true');
+        return;
+      }
+
+      // Если сейчас раньше цели — показываем и запускаем тик
+      if (new Date() < target){
+        gate.classList.add('show');
+        gate.setAttribute('aria-hidden','false');
+        updateClock();
+        var tid = setInterval(updateClock, 1000);
+      } else {
+        gate.classList.remove('show');
+        gate.setAttribute('aria-hidden','true');
+      }
+    })();
   </script>
 
   <!-- Netlify capture form (hidden, must be in static HTML) -->
@@ -709,5 +827,8 @@
     <input type="text"   name="timestamp" />
     <input type="text"   name="ua" />
   </form>
+</body>
+</html>
+
 </body>
 </html>
