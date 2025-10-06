@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ПОЛЕ ЧУДЕС — Юбилейное игра</title>
+  <title>ПОЛЕ ЧУДЕС — Юбилейное шоу</title>
   <style>
     :root{
       --ink:#f7f9ff; --muted:#b9c6ff;
@@ -53,114 +53,59 @@
     .answer.wrong input{border-color:var(--bad)}
     .note{font-size:12px; color:var(--muted)}
 
-    /* Intro modal */
-    .intro{position:fixed; inset:0; display:grid; place-items:center; background:rgba(7,10,24,.88); z-index:1000}
-    .intro.hide{display:none}
-    .ibox{width:min(720px,92vw); background:linear-gradient(180deg, #12265c, #0d1b46); border:1px solid rgba(255,255,255,.12); border-radius:20px; box-shadow:0 28px 90px rgba(0,0,0,.55); padding:18px}
-    .ibox h3{margin:0; color:var(--gold); text-shadow:0 1px 0 #000}
-    .itype{margin-top:10px; background:#0f1538; border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:12px; min-height:120px; max-height:280px; overflow:auto; font-weight:700; line-height:1.35}
-    .icta{display:flex; gap:10px; margin-top:12px}
-
-    /* Q modal */
-    .modal{position:fixed; inset:0; background:rgba(5,10,25,.86); display:none; place-items:center; z-index:1500}
-    .modal.show{display:grid}
-    .modal-card{width:min(720px,92vw); border-radius:20px; padding:22px; color:var(--ink);
-      background:linear-gradient(180deg,#12265c,#0d1b46);
-      border:1px solid rgba(255,255,255,.12); box-shadow:0 28px 90px rgba(0,0,0,.55); text-align:center}
-    .modal-title{margin:0 0 8px; color:var(--gold); font-weight:900}
-    .modal-text{font-weight:800; margin:6px 0 14px}
-    .bigScore{font-weight:900; font-size:clamp(42px, 9vw, 120px); line-height:1; color:var(--gold);
-      text-shadow:0 2px 0 #000,0 10px 26px rgba(0,0,0,.35)}
-
-    .points{font-weight:900; color:var(--gold); text-shadow:0 0 12px rgba(255,220,115,.9)}
-    canvas.confetti{position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:2000}
-
-    /* Final gifts */
-    .final{position:fixed; inset:0; background:rgba(0,0,0,.86); display:none; place-items:center; z-index:2200}
-    .final.show{display:grid}
-    .final-card{width:min(980px,94vw); background:linear-gradient(180deg,#112552,#0d1c45); color:var(--ink);
-      border:1px solid rgba(255,255,255,.12); border-radius:20px; box-shadow:0 28px 90px rgba(0,0,0,.55); padding:18px}
-    .final-title{margin:0; color:var(--gold); font-weight:900}
-    .gift-grid{display:grid; gap:10px; margin-top:14px}
-    .gift-row{display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:center; background:#0b1636; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:10px}
-    .gift-row a{color:var(--gold); text-decoration:underline; cursor:pointer}
-    .final-bar{display:flex; gap:10px; justify-content:space-between; align-items:center; margin-top:12px; flex-wrap:wrap}
-    .pill{background:#0e1a44; border:1px solid rgba(255,255,255,.15); border-radius:999px; padding:8px 12px; font-weight:800}
-    .warn{color:#ff7a7a}
-
-    /* Fullscreen video (mp4 + YouTube) */
-    .vmodal{position:fixed; inset:0; background:rgba(0,0,0,.96); display:none; place-items:center; z-index:3000}
-    .vmodal.show{display:grid}
-    .vwrap{position:relative; width:min(1280px,96vw)}
-    .vwrap video{width:100%; height:auto; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.6)}
-    .vwrap iframe{width:100%; aspect-ratio:16/9; border:0; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.6)}
-    .vclose{position:absolute; top:-44px; right:0}
-
-    /* Finish notice (after gifts) */
-    .end{position:fixed; inset:0; display:none; place-items:center; background:rgba(3,6,18,.92); z-index:2600}
-    .end.show{display:grid}
-    .end-card{
-      width:min(760px,94vw); text-align:center; padding:28px; border-radius:24px;
-      background:
-        radial-gradient(800px 400px at 50% -10%, rgba(255,220,115,.35), transparent 60%),
-        linear-gradient(180deg,#1f2f6b,#0b173f);
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 40px 120px rgba(0,0,0,.6)
+    /* ===== Countdown overlay ===== */
+    .gate {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 30%, rgba(20,30,70,0.96), rgba(5,10,25,0.98));
+      z-index: 9999;
+      color: #f7f9ff;
+      font-family: system-ui, sans-serif;
     }
-    .end-title{margin:0 0 10px; font-size:clamp(28px,5vw,44px); color:var(--gold); font-weight:900}
-    .end-text{font-weight:800; color:var(--ink); opacity:.95; margin-bottom:16px}
-    .end-btn{font-size:20px; padding:16px 24px; border-radius:16px}
+    .gcard {
+      text-align: center;
+      background: linear-gradient(180deg, #12265c, #0d1b46);
+      padding: 32px 24px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+      max-width: 500px;
+    }
+    .gtitle {
+      font-size: 28px;
+      color: #ffdc73;
+      margin: 0 0 8px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .gsub {opacity:.9;margin:0 0 18px;}
+    .clock {display:flex;justify-content:center;gap:12px;margin-bottom:18px;}
+    .tick {background:#0b1636;border-radius:12px;padding:10px 14px;min-width:70px;}
+    .num {font-size:32px;font-weight:900;color:#ffdc73;}
+    .lbl {font-size:13px;color:#b9c6ff;}
+    .gfoot {font-weight:700;color:#ffdc73;opacity:.9;}
 
-    /* ===== Countdown GATE (overlay) ===== */
-    .gate{
-      position:fixed; inset:0; z-index:5000;
-      display:none; place-items:center;
-      background:radial-gradient(1200px 600px at 50% -10%, rgba(255,220,115,.15), transparent 65%), rgba(2,6,18,.94);
-      backdrop-filter:saturate(1.1) blur(2px);
-    }
-    .gate.show{display:grid}
-    .gcard{
-      width:min(1100px,96vw); text-align:center; padding:32px 24px; border-radius:28px;
-      background:linear-gradient(180deg,#132a63,#0b173f);
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 50px 160px rgba(0,0,0,.65)
-    }
-    .gtitle{margin:0 0 10px; font-size:clamp(26px,4.5vw,38px); color:var(--gold); font-weight:900; letter-spacing:.4px}
-    .gsub{margin:0 0 18px; color:var(--muted); font-weight:800}
-    .clock{
-      display:flex; justify-content:center; gap:min(24px,3vw); flex-wrap:wrap;
-      margin:10px 0 4px;
-    }
-    .tick{
-      min-width:150px; padding:14px 16px; border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow:inset 0 0 40px rgba(0,0,0,.25), 0 16px 40px rgba(0,0,0,.35);
-    }
-    .num{
-      font-weight:900; line-height:1; letter-spacing:1px;
-      font-size:clamp(40px, 10vw, 110px);
-      color:var(--gold);
-      text-shadow:0 2px 0 #000, 0 18px 40px rgba(0,0,0,.35);
-    }
-    .lbl{opacity:.9; font-weight:800; margin-top:6px}
-    .gfoot{margin-top:14px; font-size:13px; color:var(--muted)}
-    .gfoot b{color:var(--gold)}
   </style>
 </head>
 <body>
-  <!-- Intro -->
-  <div id="intro" class="intro">
-    <div class="ibox">
-      <h3>🎙️ Приветствие нашего уважаемого гостя</h3>
-      <div id="introText" class="itype"></div>
-      <div class="icta">
-        <button id="introPlay" class="btn">▶️ Воспроизвести</button>
-        <button id="introClose" class="btn btn-ghost">Закрыть</button>
+
+  <!-- ===== Countdown GATE ===== -->
+  <div id="gate" class="gate" aria-hidden="true">
+    <div class="gcard">
+      <h3 class="gtitle">Доступ к подарку будет открыт:</h3>
+      <p class="gsub">Осталось до открытия</p>
+      <div class="clock" id="clock">
+        <div class="tick"><div class="num" id="d">00</div><div class="lbl">дней</div></div>
+        <div class="tick"><div class="num" id="h">00</div><div class="lbl">часов</div></div>
+        <div class="tick"><div class="num" id="m">00</div><div class="lbl">минут</div></div>
+        <div class="tick"><div class="num" id="s">00</div><div class="lbl">секунд</div></div>
       </div>
+      <div class="gfoot">Подарку нужно настояться ;)</div>
     </div>
   </div>
 
+  <!-- ===== Основной сайт ===== -->
   <div class="veil">
     <div class="wrap">
       <div class="bar">
@@ -168,19 +113,15 @@
           <div class="title">ПОЛЕ ЧУДЕС — Юбилейное шоу</div>
           <div class="sub">Крути барабан, отвечай на вопросы, будь счастлив!</div>
         </div>
-        <div class="bar">
-          <button id="reset" class="btn btn-ghost">Сброс</button>
-        </div>
+        <div class="bar"><button id="reset" class="btn btn-ghost">Сброс</button></div>
       </div>
 
-      <!-- Top panel -->
       <div class="card pad panel" id="panel">
         <div class="rule" id="rule">Правила: нажми «Крутить», дождись очков и отвечай на вопрос.</div>
         <div>Счёт: <span id="score" class="points">0</span></div>
       </div>
 
       <div class="grid">
-        <!-- Left: Wheel -->
         <div class="card pad">
           <div class="wheel-wrap">
             <div class="pin"></div>
@@ -190,7 +131,6 @@
           <div class="log" id="log"></div>
         </div>
 
-        <!-- Right: Question / Answer -->
         <div class="card pad qbox">
           <div class="q" id="question">Вопрос появится после барабана.</div>
           <div class="word-len" id="length"></div>
@@ -198,637 +138,81 @@
             <input id="answer" type="text" placeholder="Введите слово" />
             <button id="submit" class="btn">Ответить</button>
           </div>
-          <div class="note">Подсказка: верный ответ подсветится <span style="color:var(--good)">зелёным</span>, неверный — <span style="color:var(--bad)">красным</span>.</div>
+          <div class="note">Верный ответ — <span style="color:var(--good)">зелёный</span>, неверный — <span style="color:var(--bad)">красный</span>.</div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Q modal -->
-  <div id="qModal" class="modal" aria-hidden="true">
-    <div class="modal-card">
-      <h3 class="modal-title" id="qTitle">Твои баллы</h3>
-      <div id="qScore" class="modal-text bigScore"></div>
-      <div id="qText" class="modal-text"></div>
-      <button id="qClose" class="btn">ЙОУ</button>
-    </div>
-  </div>
-
-  <!-- Fullscreen MP4 video (после супер-игры) -->
-  <div id="videoModal" class="vmodal" aria-hidden="true">
-    <div class="vwrap">
-      <button id="videoClose" class="btn vclose">Закрыть ✖</button>
-      <video id="finalVideo" src="dreamina.mp4" controls></video>
-    </div>
-  </div>
-
-  <!-- Fullscreen YouTube (финальное поздравление после подарков) -->
-  <div id="ytModal" class="vmodal" aria-hidden="true">
-    <div class="vwrap">
-      <button id="ytClose" class="btn vclose">Закрыть ✖</button>
-      <iframe id="ytFrame" title="Поздравление" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
-  </div>
-
-  <!-- Gifts -->
-  <div id="finalModal" class="final" aria-hidden="true">
-    <div class="final-card">
-      <h3 class="final-title">🏆 Выбор подарков</h3>
-      <p id="finalIntro" class="sub"></p>
-      <div class="pill">Бюджет: <b id="budget"></b> очков • Выбрано: <b id="spent">0</b></div>
-
-      <div id="giftList" class="gift-grid"></div>
-
-      <div class="final-bar">
-        <div>
-          <div id="finalWarn" class="warn"></div>
-          <div id="notifyStatus" class="sub"></div>
-        </div>
-        <div style="display:flex; gap:8px">
-          <button id="clearGifts" class="btn btn-ghost">Сбросить выбор</button>
-          <button id="confirmGifts" class="btn">Подтвердить выбор</button>
-          <button id="closeFinal" class="btn btn-ghost">Закрыть</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bright finish notice -->
-  <div id="endModal" class="end" aria-hidden="true">
-    <div class="end-card">
-      <h3 class="end-title">🎁 Подарок от мамы и брата уже в пути!</h3>
-      <div class="end-text">Спасибо за игру! Остался последний штрих — финальное поздравление.</div>
-      <button id="endFinish" class="btn end-btn">Завершить игру</button>
-    </div>
-  </div>
-
-  <!-- ===== Countdown overlay (GATE) ===== -->
-  <div id="gate" class="gate" aria-hidden="true">
-    <div class="gcard">
-      <h3 class="gtitle">🔒 Доступ будет открыт в субботу</h3>
-      <p class="gsub">Осталось до открытия:</p>
-      <div class="clock" id="clock">
-        <div class="tick"><div class="num" id="d">00</div><div class="lbl">дней</div></div>
-        <div class="tick"><div class="num" id="h">00</div><div class="lbl">часов</div></div>
-        <div class="tick"><div class="num" id="m">00</div><div class="lbl">минут</div></div>
-        <div class="tick"><div class="num" id="s">00</div><div class="lbl">секунд</div></div>
-      </div>
-      <div class="gfoot">Совсем скоро начнём. Если ты админ — добавь <b>?preview=1</b> к адресу, чтобы посмотреть сайт.</div>
     </div>
   </div>
 
   <script>
-    // ===== Intro (audio + typewriter)
-    const introTextFixed = `Привет Настёна, Ваня и другие уважаемые гости. Ну вот и пришёл тот самый день, когда нужно сыграть в игру. Правила очень просты - налейте себе шампусика и получайте удовольствие родненькие вы мои`;
-    const introAudio = new Audio('intro.mp3');
-    const intro = document.getElementById('intro');
-    const introPlay = document.getElementById('introPlay');
-    const introClose = document.getElementById('introClose');
-    const introTextEl = document.getElementById('introText');
-
-    function typewrite(text, el, speed=96){
-      return new Promise(res=>{
-        el.textContent=''; let i=0;
-        const t=setInterval(()=>{ el.textContent += text[i++]||''; if(i>=text.length){ clearInterval(t); res(); } }, speed);
-      });
-    }
-    introPlay.addEventListener('click', async ()=>{
-      introPlay.disabled = true;
-      try{ await introAudio.play(); }catch(e){}
-      await typewrite(introTextFixed, introTextEl);
-    });
-    introClose.addEventListener('click', ()=>{ intro.classList.add('hide'); try{ introAudio.pause(); }catch(e){} });
-
-    // ===== Sounds
-    const spinSong = new Audio('song.mp3'); spinSong.loop = true; spinSong.preload = 'auto'; spinSong.volume = 0.3;
-    const wrongSfx = new Audio('pole_letter_wrong.mp3');
-    const winSfx1  = new Audio('zrejdbxx.mp3');
-    const winSfx2  = new Audio('pole_word_1996.mp3');
-
-    // ===== Wheel
-    const points = [100,200,300,400,500,600,700,800,900,1000];
-    const wheel  = document.getElementById('wheel');
-    const ctx    = wheel.getContext('2d');
-    let angle=0, spinning=false;
-
-    function drawWheel(a=0){
-      const W = wheel.width  = wheel.clientWidth  * devicePixelRatio;
-      const H = wheel.height = wheel.clientHeight * devicePixelRatio;
-      const cx=W/2, cy=H/2; const R=Math.min(W,H)/2 - 12*devicePixelRatio;
-      const n = points.length; const arc = 2*Math.PI/n;
-      ctx.clearRect(0,0,W,H); ctx.save(); ctx.translate(cx,cy); ctx.rotate(a);
-
-      for(let i=0;i<n;i++){
-        ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R,i*arc,(i+1)*arc);
-        ctx.fillStyle = (i%2? '#103079':'#142d63'); ctx.fill();
-        ctx.strokeStyle = '#0a1e4f'; ctx.lineWidth = 3*devicePixelRatio; ctx.stroke();
-        ctx.save(); ctx.rotate(i*arc + arc/2); ctx.fillStyle = '#ffdc73';
-        ctx.font = `${Math.max(18*devicePixelRatio,R*0.085)}px system-ui`;
-        ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.translate(R*0.75,0); ctx.rotate(Math.PI/2);
-        ctx.fillText(points[i].toString(),0,0);
-        ctx.restore();
-      }
-      const bulbs = 72;
-      for(let i=0;i<bulbs;i++){
-        const ang = a + (i/bulbs)*Math.PI*2;
-        const bx = Math.cos(ang)*(R+10*devicePixelRatio);
-        const by = Math.sin(ang)*(R+10*devicePixelRatio);
-        ctx.beginPath(); ctx.arc(bx,by,4*devicePixelRatio,0,Math.PI*2);
-        const on = (Math.floor(Date.now()/120)%2===i%2);
-        ctx.fillStyle = on? 'rgba(255,240,150,.95)':'rgba(255,210,77,.85)';
-        ctx.fill(); ctx.strokeStyle='rgba(0,0,0,.45)'; ctx.stroke();
-      }
-      ctx.restore();
-    }
-    window.addEventListener('resize', ()=> drawWheel(angle));
-    drawWheel(angle);
-
-    // ==== spin(): одинаковая «сила» + случайная длительность 8–15 сек
-    function spin(){
-      if(spinning) return;
-      spinning = true;
-      try{ spinSong.volume = 1.0; if (spinSong.paused) spinSong.play(); }catch(e){}
-
-      const DURATION = Math.floor(8000 + Math.random()*7000); // 8–15 сек
-      const TURNS    = 7;                                     // фиксированная «сила»
-
-      const startAngle = angle;
-      const n = points.length; const arc = 2*Math.PI/n;
-
-      const targetIndex = Math.floor(Math.random()*n);
-      const sectorCenter = (targetIndex + 0.5) * arc;
-      const targetAngle  = -Math.PI/2 - sectorCenter;
-      const endAngle     = targetAngle + TURNS*2*Math.PI;
-
-      const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
-      const t0 = performance.now();
-
-      function step(ts){
-        const t = Math.min(1, (ts - t0) / DURATION);
-        const eased = easeOutCubic(t);
-        angle = startAngle + (endAngle - startAngle) * eased;
-        drawWheel(angle);
-        if(t < 1) requestAnimationFrame(step); else { spinning=false; finalize(targetIndex); }
-      }
-      requestAnimationFrame(step);
-    }
-    document.getElementById('spin').addEventListener('click', spin);
-
-    function finalize(idx){
-      try{ spinSong.volume = 0.3; if (spinSong.paused) spinSong.play(); }catch(e){}
-      const p = points[idx];
-      log(`🎯 Выпало: <b>${p}</b> очков`);
-
-      if(superSpinPending){
-        document.getElementById('qTitle').textContent = 'СУПЕР ИГРА';
-        document.getElementById('qScore').textContent = '';
-        document.getElementById('qText').innerHTML = 'Очки удваиваются!<br>Вопрос: «Белорусский дипломатический подарок, который всегда принимают без визы. Что это?»';
-        qModal.classList.add('show'); qModal.setAttribute('aria-hidden','false');
-        superRoundActive = true;
-        document.getElementById('rule').textContent = 'Отвечай на вопрос СУПЕР ИГРЫ!';
-        document.getElementById('question').textContent = 'СУПЕР ИГРА — вопрос уже на экране.';
-        document.getElementById('length').textContent = 'Слово из 6 букв';
-        const input = document.getElementById('answer'); input.value=''; input.focus();
-        document.getElementById('answerBox').classList.remove('correct','wrong');
-        return;
-      }
-
-      document.getElementById('rule').innerHTML = `Твои очки за барабан: <span class="points">${p}</span>. Ответь на вопрос!`;
-
-      const r = normalRounds[round];
-      setTimeout(()=>{
-        document.getElementById('qTitle').textContent = 'Твои баллы';
-        document.getElementById('qScore').textContent = `${p}`;
-        document.getElementById('qText').textContent  = `Твой вопрос: "${r ? r.q : ''}"`;
-        qModal.classList.add('show'); qModal.setAttribute('aria-hidden','false');
-      }, 1200);
-
-      showQuestion(p);
-    }
-
-    function log(html){
-      const box=document.getElementById('log');
-      const d=document.createElement('div');
-      d.innerHTML = `<span class="note">${new Date().toLocaleTimeString()}</span> ${html}`;
-      box.prepend(d);
-    }
-
-    // ===== Questions (обновлено)
-    const normalRounds = [
-      { q: 'Чуть не сгорели мы в костре, вместо воды в нас коньячок, мы танцевали до утра, в сарае я улегся на бочок', a: ['КУПАЛА','КУПАЛО'] },
-      { q: 'УуУуУу «Восьмиклассница». Где исполнялась эта композиция?', a: 'ЗЫБА' },
-      { q: 'Они умели летать, самые богатые клали под жопу пластик, мы же как килька в банке лежали на клеёнке, итог был один — ИИИИууу и мокрая жопа', a: 'ГОРКА' },
-      { q: 'Сейчас люди голосуют на честных выборах. Раньше же голоса можно было купить с помощью фотографий с сигмой. Кто этот добрый самаритянин?', a: 'КУКЛЮК' },
-      { q: 'Стоило кому-то вынести его из столовой — сразу появлялось пять «друзей», которых до этого ты не знал.', a: ['БЕЛЯШ','БИЛЯШ'] },
-      { q: 'Это не урок биологии, но там мы впервые изучали «анатомию» на практике. Это не кукурузное поле, но там можно было спрятаться. Это не секция борьбы, но там часто оказывались в странных захватах. Это не допросная, но стоило включить фонарь — кто-то сразу признавался и начинал ссать.', a: 'САРАЙ' },
-      { q: 'Где можно было искупаться, выйти «свежим», а потом вонять болотом три дня подряд?', a: ['КАМЕНКА','ПРИЛЕПЫ'] }
-    ];
-    const superQuestion = { q: 'Белорусский дипломатический подарок, который всегда принимают без визы. Что это?', a: ['БУЛЬБА'] };
-
-    let round = 0; let score = 0;
-    let currentSpinPoints = 0;
-    let superSpinPending = false;
-    let superRoundActive = false;
-
-    function normalizeRu(s){ return s.trim().toUpperCase().replace(/Ё/g,'Е'); }
-    function getAcceptList(a){ return Array.isArray(a) ? a.map(normalizeRu) : [normalizeRu(a)]; }
-
-    function showQuestion(p=0){
-      currentSpinPoints = p;
-      const r = normalRounds[round];
-      if(!r){
-        superSpinPending = true;
-        document.getElementById('rule').textContent = 'Финал! Крути барабан для СУПЕР ИГРЫ.';
-        document.getElementById('question').textContent = 'СУПЕР ИГРА появится после следующего барабана.';
-        document.getElementById('length').textContent  = '';
-        return;
-      }
-      document.getElementById('question').textContent = `Вопрос: ${r.q}`;
-      const firstAns = Array.isArray(r.a) ? r.a[0] : r.a;
-      document.getElementById('length').textContent  = `Слово из ${normalizeRu(firstAns).length} букв`;
-      const input = document.getElementById('answer'); input.value=''; input.focus();
-      document.getElementById('answerBox').classList.remove('correct','wrong');
-    }
-
-    function checkAnswer(){
-      const box  = document.getElementById('answerBox');
-      const got  = normalizeRu(document.getElementById('answer').value);
-
-      if(superRoundActive){
-        const list = getAcceptList(superQuestion.a);
-        if(list.includes(got)){
-          box.classList.remove('wrong'); box.classList.add('correct');
-          log('✅ СУПЕР! Ответ верный, очки удваиваются.');
-          score = score * 2;
-          document.getElementById('score').textContent = score;
-          launchConfetti();
-          try{ (Math.random()<0.5 ? winSfx1 : winSfx2).play(); }catch(e){}
-          superRoundActive = false;
-          superSpinPending = false;
-          setTimeout(()=> endGameWithVideo(), 3000);
-        } else {
-          box.classList.remove('correct'); box.classList.add('wrong');
-          log('❌ Эхх, вы совершили ошибку. Удваивание очков отменяется. Попробуйте снова.');
-          try{ wrongSfx.currentTime=0; wrongSfx.play(); }catch(e){}
-        }
-        return;
-      }
-
-      const r = normalRounds[round]; if(!r) return;
-      const list = getAcceptList(r.a);
-
-      if(list.includes(got)){
-        box.classList.remove('wrong'); box.classList.add('correct');
-        if(!isNaN(currentSpinPoints)){ score += currentSpinPoints; document.getElementById('score').textContent = score; }
-        log('✅ Совершенно верно!');
-        launchConfetti();
-        try{ (Math.random()<0.5 ? winSfx1 : winSfx2).play(); }catch(e){}
-
-        round++;
-        setTimeout(()=>{
-          if(round >= normalRounds.length){
-            document.getElementById('rule').textContent = 'Финал! Крути барабан для СУПЕР ИГРЫ.';
-            document.getElementById('question').textContent = 'СУПЕР ИГРА появится после следующего барабана.';
-            document.getElementById('length').textContent  = '';
-            superSpinPending = true;
-          } else {
-            document.getElementById('rule').textContent = 'Снова крути барабан!';
-            document.getElementById('question').textContent = 'Вопрос появится после барабана.';
-            document.getElementById('length').textContent = '';
-          }
-        }, 500);
-      } else {
-        box.classList.remove('correct'); box.classList.add('wrong');
-        log('❌ Неверно, попробуй ещё раз.');
-        try{ wrongSfx.currentTime=0; wrongSfx.play(); }catch(e){}
-      }
-    }
-    document.getElementById('submit').addEventListener('click', checkAnswer);
-    document.getElementById('answer').addEventListener('keydown', e=>{ if(e.key==='Enter') checkAnswer(); });
-
-    // Q modal controls
-    const qModal = document.getElementById('qModal');
-    document.getElementById('qClose').addEventListener('click',()=>{
-      qModal.classList.remove('show');
-      qModal.setAttribute('aria-hidden','true');
-      document.getElementById('answer').focus();
-    });
-
-    document.getElementById('reset').addEventListener('click', ()=>{
-      try{ spinSong.pause(); }catch(e){}
-      spinSong.currentTime=0; spinSong.volume=0.3;
-      score=0; round=0; angle=0;
-      superSpinPending=false; superRoundActive=false; currentSpinPoints=0;
-      document.getElementById('score').textContent='0';
-      document.getElementById('rule').textContent='Правила: нажми «Крутить», дождись очков и отвечай на вопрос.';
-      document.getElementById('question').textContent='Вопрос появится после барабана.';
-      document.getElementById('length').textContent='';
-      qModal.classList.remove('show'); qModal.setAttribute('aria-hidden','true');
-      document.getElementById('finalModal').classList.remove('show'); document.getElementById('finalModal').setAttribute('aria-hidden','true');
-      document.getElementById('videoModal').classList.remove('show'); document.getElementById('videoModal').setAttribute('aria-hidden','true');
-      document.getElementById('ytModal').classList.remove('show'); document.getElementById('ytModal').setAttribute('aria-hidden','true');
-      drawWheel(0); document.getElementById('log').innerHTML='';
-    });
-
-    // ===== Confetti
-    function launchConfetti(){
-      const c=document.createElement('canvas'); c.className='confetti'; document.body.appendChild(c);
-      const cx=c.getContext('2d'); const DPR=window.devicePixelRatio||1;
-      let W=innerWidth, H=innerHeight; c.width=W*DPR; c.height=H*DPR; cx.scale(DPR,DPR);
-      const parts=[...Array(140)].map(()=>({
-        x:Math.random()*W, y:-20-Math.random()*H*0.3,
-        vx:-2+Math.random()*4, vy:2+Math.random()*4,
-        rot:Math.random()*Math.PI, vr:-0.2+Math.random()*0.4,
-        life:120+Math.random()*80, size:5+Math.random()*5,
-        hue:Math.random()*360
-      }));
-      function draw(){
-        cx.clearRect(0,0,W,H);
-        parts.forEach(p=>{
-          p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life--;
-          cx.save(); cx.translate(p.x,p.y); cx.rotate(p.rot);
-          cx.fillStyle=`hsl(${p.hue},85%,60%)`;
-          cx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
-          cx.restore();
-        });
-        if(parts.some(p=>p.life>0)) requestAnimationFrame(draw); else c.remove();
-      }
-      draw();
-    }
-
-    // ===== Final video (после супер-игры)
-    const videoModal = document.getElementById('videoModal');
-    const finalVideo = document.getElementById('finalVideo');
-    const videoClose = document.getElementById('videoClose');
-
-    function endGameWithVideo(){
-      setTimeout(()=>{
-        try{ spinSong.pause(); }catch(e){}
-        videoModal.classList.add('show'); videoModal.setAttribute('aria-hidden','false');
-        try{ finalVideo.currentTime = 0; finalVideo.play(); }catch(e){}
-      }, 0);
-    }
-    function closeVideoAndOpenGifts(){
-      try{ finalVideo.pause(); }catch(e){}
-      videoModal.classList.remove('show'); videoModal.setAttribute('aria-hidden','true');
-      openGifts(score);
-    }
-    videoClose.addEventListener('click', closeVideoAndOpenGifts);
-
-    // ===== YouTube final (после подарков)
-    const ytModal = document.getElementById('ytModal');
-    const ytFrame = document.getElementById('ytFrame');
-    const ytClose = document.getElementById('ytClose');
-
-    function openFinalCongratsVideo(){
-      try{ spinSong.pause(); }catch(e){}
-      ytFrame.src = 'https://www.youtube.com/embed/V41i42fp4dU?autoplay=1&rel=0&modestbranding=1';
-      ytModal.classList.add('show'); ytModal.setAttribute('aria-hidden','false');
-    }
-    ytClose.addEventListener('click', ()=>{
-      ytFrame.src = '';
-      ytModal.classList.remove('show'); ytModal.setAttribute('aria-hidden','true');
-    });
-
-    // ===== Gifts
-    const giftsSource = [
-      {name:'Горный велосипед', tier:'4/4', desc:'Согласовывается индивидуально'},
-      {name:'Прыжок с парашютом в любой точке мира', tier:'4/4', desc:'Купон без ограничения по времени'},
-      {name:'Вайбовая колонка Marshall', tier:'4/4', link:'https://catalog.onliner.by/wspeaker/marshall/acton2bl1'},
-      {name:'E-book Amazon последняя версия', tier:'4/4', link:'https://kindle.by/devices/amazon-kindle-paperwhite-6-12-generation-16gb-black'},
-      {name:'Алисина колонка (AI edition)', tier:'2/4', link:'https://catalog.onliner.by/wspeaker/yandex/yanstmidiblk'},
-      {name:'Премиум наушники Realme', tier:'2/4', link:'https://market.yandex.ru/card/naushniki-besprovodnyye-realme-buds-air7air7-pro-bluetooth-c-shumopodavleniyem/4598149761'},
-      {name:'Скидка 30% на авиабилет', tier:'2/4', desc:'Придёт в виде USDT'},
-      {name:'Отдых в баньке «Избушка»', tier:'2/4', link:'https://www.saunaminska.by/izbushka.htm'},
-      {name:'Поездка в нацпарк Нарочаны', tier:'2/4', desc:'Организуем!'},
-      {name:'Очки с камерой 4K Indigo', tier:'2/4', link:'https://catalog.onliner.by/actioncamera/xtry/xtg113fhdindigop'},
-      {name:'Аэрогриль BR2039', tier:'1/4', link:'https://brayer.ru/catalog/aerogrili/aerogril-brayer-br2039/'},
-      {name:'Электрическая щётка Oclean', tier:'1/4', link:'https://catalog.onliner.by/toothbrush/oclean/oclexproelitegre'},
-      {name:'Кольцо для сна Mijia', tier:'1/4', link:'https://market.yandex.ru/card/xiaomi-smart-ring-bluetooth-black-size-11/4589470934'}
-    ];
-
-    const finalModal = document.getElementById('finalModal');
-    const giftListEl = document.getElementById('giftList');
-    const spentEl = document.getElementById('spent');
-    const budgetEl = document.getElementById('budget');
-    const finalWarn = document.getElementById('finalWarn');
-    const finalIntro = document.getElementById('finalIntro');
-    const btnConfirm = document.getElementById('confirmGifts');
-    const btnClear = document.getElementById('clearGifts');
-    const btnClose = document.getElementById('closeFinal');
-
-    let budget=0, selection={}, pricedGifts=[];
-
-    function roundTo100(x){ return Math.max(100, Math.round(x/100)*100); }
-    function randRange(min,max){ return Math.random()*(max-min)+min; }
-
-    function priceByTier(tier, total){
-      if(tier==='4/4') return roundTo100(randRange(total*0.90, total*1.00));
-      if(tier==='2/4') return roundTo100(randRange(total*0.40, total*0.48));
-      return roundTo100(randRange(total*0.20, total*0.25)); // 1/4
-    }
-
-    function openGifts(finalScore){
-      budget = finalScore;
-      budgetEl.textContent = budget.toString();
-      spentEl.textContent = '0';
-      finalWarn.textContent = '';
-      document.getElementById('notifyStatus').textContent = '';
-      finalIntro.textContent = `Итоговый счёт — ${finalScore} очков. Выбирай призы на эту сумму:`;
-
-      pricedGifts = giftsSource.map(g=> ({...g, price: priceByTier(g.tier, budget)}));
-
-      giftListEl.innerHTML = '';
-      selection = {};
-      pricedGifts.forEach((g,idx)=>{
-        const row = document.createElement('div');
-        row.className = 'gift-row';
-
-        const label = document.createElement('label');
-        const cb = document.createElement('input');
-        cb.type='checkbox'; cb.dataset.idx = idx;
-        label.appendChild(cb);
-
-        const text = document.createElement('div');
-        const name = document.createElement('div');
-        const more = g.link ? ` — <a href="${g.link}" target="_blank" rel="noopener">узнать подробнее</a>`
-                            : (g.desc ? ` — <span class="sub">${g.desc}</span>` : '');
-        name.innerHTML = `${g.name} — <b>${g.price}</b> очков${more}`;
-        text.appendChild(name);
-
-        row.appendChild(label);
-        row.appendChild(text);
-        giftListEl.appendChild(row);
-
-        cb.addEventListener('change', onSelectChange);
-      });
-
-      btnConfirm.onclick = confirmGifts;
-      btnClear.onclick = clearSelection;
-      btnClose.onclick = ()=>closeGifts();
-
-      finalModal.classList.add('show'); finalModal.setAttribute('aria-hidden','false');
-    }
-
-    function closeGifts(){
-      finalModal.classList.remove('show');
-      finalModal.setAttribute('aria-hidden','true');
-    }
-
-    function onSelectChange(e){
-      const idx = parseInt(e.target.dataset.idx,10);
-      selection[idx] = e.target.checked;
-      recompute();
-    }
-
-    function recompute(){
-      let spent = 0;
-      Object.entries(selection).forEach(([k,v])=>{
-        if(!v) return;
-        spent += pricedGifts[parseInt(k,10)].price;
-      });
-
-      spentEl.textContent = spent.toString();
-      let warn = '';
-      if(spent > budget) warn += 'Перебор бюджета. ';
-      finalWarn.textContent = warn.trim();
-      btnConfirm.disabled = warn.length>0 || spent===0;
-    }
-
-    function clearSelection(){
-      selection = {};
-      document.querySelectorAll('#giftList input[type="checkbox"]').forEach(cb=> cb.checked=false);
-      recompute();
-    }
-
-    // === Netlify Forms submission (hidden form below)
-    function confirmGifts(){
-      const chosen = Object.entries(selection)
-        .filter(([,v])=>v)
-        .map(([k])=> pricedGifts[parseInt(k,10)]);
-      if (chosen.length === 0) { alert('Сначала выбери хотя бы один приз.'); return; }
-
-      const names = chosen.map(c=>`${c.name} — ${c.price} очков`).join('\n');
-      const spent = chosen.reduce((s,c)=>s + c.price, 0);
-
-      const ns = document.getElementById('notifyStatus');
-      ns.textContent = '⏳ Отправляю выбор...';
-
-      const form = document.forms['gift-submit'];
-      form.player_name.value = 'Гость';
-      form.score.value       = String(score);
-      form.spent.value       = String(spent);
-      form.chosen.value      = names.replace(/\n/g, ' | ');
-      form.timestamp.value   = new Date().toISOString();
-      form.ua.value          = navigator.userAgent;
-
-      const data = new FormData(form);
-      fetch("/", { method: "POST", body: data })
-        .then(()=>{
-          ns.textContent = '✅ Выбор отправлен (Netlify Forms).';
-          alert(`Выбрано:\n${names}\n\nСумма: ${spent} из ${budget}\n\nСпасибо!`);
-          closeGifts();
-          showFinishNotice();
-        })
-        .catch((err)=>{
-          console.error(err);
-          ns.textContent = '❌ Не удалось отправить на Netlify. Попробуйте ещё раз.';
-          alert('Не удалось отправить выбор. Попробуй ещё раз.');
-        });
-    }
-
-    // ===== Finish notice + YouTube open
-    const endModal = document.getElementById('endModal');
-    const endFinish = document.getElementById('endFinish');
-    function showFinishNotice(){
-      endModal.classList.add('show'); endModal.setAttribute('aria-hidden','false');
-    }
-    endFinish.addEventListener('click', ()=>{
-      endModal.classList.remove('show'); endModal.setAttribute('aria-hidden','true');
-      openFinalCongratsVideo();
-    });
-
-    // ====== COUNTDOWN LOGIC ======
-    (function setupGate(){
-      const url = new URL(window.location.href);
-      const previewBypass = url.searchParams.get('preview') === '1';
-      const gate = document.getElementById('gate');
-      if(!gate) return;
-
-      // Настройка цели: ближайшая СУББОТА 19:00 локального времени
-      const targetHour = 19, targetMinute = 0;
-
-      function getNextSaturdayAt(h=19, m=0){
-        const now = new Date();
-        const day = now.getDay(); // 0=Sun ... 6=Sat
-        let diff = (6 - day + 7) % 7; // до субботы
-        let candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff, h, m, 0, 0);
-        if (candidate <= now) {
-          candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff + 7, h, m, 0, 0);
-        }
-        return candidate;
-      }
-
-      const target = getNextSaturdayAt(targetHour, targetMinute);
-
-      function updateClock(){
-        const now = new Date();
-        const remain = target - now;
-        if (remain <= 0){
-          // Время пришло — скрываем оверлей
-          gate.classList.remove('show');
-          gate.setAttribute('aria-hidden','true');
-          clearInterval(tid);
-          return;
-        }
-        const s = Math.floor(remain/1000) % 60;
-        const m = Math.floor(remain/1000/60) % 60;
-        const h = Math.floor(remain/1000/60/60) % 24;
-        const d = Math.floor(remain/1000/60/60/24);
-
-        const dd = document.getElementById('d');
-        const hh = document.getElementById('h');
-        const mm = document.getElementById('m');
-        const ss = document.getElementById('s');
-        if(dd) dd.textContent = String(d).padStart(2,'0');
-        if(hh) hh.textContent = String(h).padStart(2,'0');
-        if(mm) mm.textContent = String(m).padStart(2,'0');
-        if(ss) ss.textContent = String(s).padStart(2,'0');
-      }
-
-      if (previewBypass){
-        // Админ-просмотр — не показываем
-        gate.classList.remove('show');
-        gate.setAttribute('aria-hidden','true');
-        return;
-      }
-
-      // Если сейчас раньше цели — показываем и запускаем тик
-      if (new Date() < target){
-        gate.classList.add('show');
-        gate.setAttribute('aria-hidden','false');
-        updateClock();
-        var tid = setInterval(updateClock, 1000);
-      } else {
-        gate.classList.remove('show');
-        gate.setAttribute('aria-hidden','true');
-      }
-    })();
+  // ===== Countdown Timer =====
+  const gate = document.getElementById('gate');
+  const dEl = document.getElementById('d');
+  const hEl = document.getElementById('h');
+  const mEl = document.getElementById('m');
+  const sEl = document.getElementById('s');
+  const targetDate = new Date('2025-10-11T00:00:00+07:00'); // суббота
+
+  function updateCountdown(){
+    const now = new Date();
+    const diff = targetDate - now;
+    if(diff <= 0){ gate.style.display='none'; return; }
+
+    const d = Math.floor(diff/(1000*60*60*24));
+    const h = Math.floor((diff/(1000*60*60))%24);
+    const m = Math.floor((diff/(1000*60))%60);
+    const s = Math.floor((diff/1000)%60);
+
+    dEl.textContent = d.toString().padStart(2,'0');
+    hEl.textContent = h.toString().padStart(2,'0');
+    mEl.textContent = m.toString().padStart(2,'0');
+    sEl.textContent = s.toString().padStart(2,'0');
+  }
+  setInterval(updateCountdown,1000);
+  updateCountdown();
+
+  // ===== Основная логика барабана (упрощённая версия, не менялась)
+  const wheel=document.getElementById('wheel'),ctx=wheel.getContext('2d');
+  const points=[100,200,300,400,500,600,700,800,900,1000];
+  let angle=0,spinning=false;
+
+  function drawWheel(a=0){
+    const W=wheel.width=wheel.clientWidth*devicePixelRatio;
+    const H=wheel.height=wheel.clientHeight*devicePixelRatio;
+    const cx=W/2,cy=H/2,R=Math.min(W,H)/2-12*devicePixelRatio;
+    const n=points.length,arc=2*Math.PI/n;
+    ctx.clearRect(0,0,W,H);ctx.save();ctx.translate(cx,cy);ctx.rotate(a);
+    for(let i=0;i<n;i++){
+      ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R,i*arc,(i+1)*arc);
+      ctx.fillStyle=i%2?'#103079':'#142d63';ctx.fill();
+      ctx.save();ctx.rotate(i*arc+arc/2);
+      ctx.fillStyle='#ffdc73';ctx.font=`${Math.max(18*devicePixelRatio,R*0.085)}px system-ui`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.translate(R*0.75,0);ctx.rotate(Math.PI/2);
+      ctx.fillText(points[i],0,0);ctx.restore();
+    }ctx.restore();
+  }
+  window.addEventListener('resize',()=>drawWheel(angle));
+  drawWheel(angle);
+
+  document.getElementById('spin').addEventListener('click',()=>{
+    if(spinning)return;spinning=true;
+    const DURATION=8000+Math.random()*7000;const TURNS=7;
+    const startAngle=angle;const n=points.length;const arc=2*Math.PI/n;
+    const targetIndex=Math.floor(Math.random()*n);
+    const sectorCenter=(targetIndex+0.5)*arc;
+    const targetAngle=-Math.PI/2-sectorCenter;const endAngle=targetAngle+TURNS*2*Math.PI;
+    const easeOut=t=>1-Math.pow(1-t,3);const t0=performance.now();
+    function step(ts){
+      const t=Math.min(1,(ts-t0)/DURATION);
+      const eased=easeOut(t);angle=startAngle+(endAngle-startAngle)*eased;
+      drawWheel(angle);if(t<1)requestAnimationFrame(step);else spinning=false;
+    }requestAnimationFrame(step);
+  });
   </script>
-
-  <!-- Netlify capture form (hidden, must be in static HTML) -->
-  <form name="gift-submit" method="POST" data-netlify="true" netlify style="display:none">
-    <input type="hidden" name="form-name" value="gift-submit" />
-    <input type="text"   name="player_name" />
-    <input type="number" name="score" />
-    <input type="number" name="spent" />
-    <textarea name="chosen"></textarea>
-    <input type="text"   name="timestamp" />
-    <input type="text"   name="ua" />
-  </form>
 </body>
 </html>
+
 
 </body>
 </html>
